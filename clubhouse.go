@@ -111,7 +111,11 @@ func (ch *Clubhouse) createObject(resource string, jsonStr []byte) ([]byte, erro
 
 	defer resp.Body.Close()
 	if resp.StatusCode != 201 {
-		return []byte{}, fmt.Errorf("API Returned HTTP Status Code of %d", resp.StatusCode)
+		body, err := ioutil.ReadAll(resp.Body)
+		if err != nil {
+			return []byte{}, err
+		}
+		return []byte{}, fmt.Errorf("API Returned HTTP Status Code of %d\n%s", resp.StatusCode, body)
 	}
 
 	return ioutil.ReadAll(resp.Body)
